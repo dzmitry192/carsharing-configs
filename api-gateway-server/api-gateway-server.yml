@@ -1,0 +1,28 @@
+server:
+  port: 8088                      #set port
+  error:
+    include-message: always       #add error message for all responses
+
+spring:
+  application:
+    name: api-gateway-server      #set app name
+  cloud:
+    gateway:
+      default-filters:
+        - AddRequestHeader=Is-Proxy-Request, true     #add for all request new header for identify that request was from api-gateway
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
+      globalcors:
+        cors-сonfigurations:
+          '[/**]':                #for all routes permitted all origins, headers and methods
+            allowedOrigins: "*"
+            allowedHeaders: "*"
+            allowedMethods: "*"
+      metrics:                    #add metrics
+        enabled: true
+        actuator:
+          verbose:
+            enabled: true         #add detailed description for actuator
+        discovery:
+          locator:
+            enabled: true         #enable locator for finding registered services
+            lower-case-service-id: true
