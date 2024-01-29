@@ -26,3 +26,40 @@ spring:
           locator:
             enabled: true         #enable locator for finding registered services
             lower-case-service-id: true
+
+#props for configuration circuit breaker and time limiter
+api-gateway-server:
+  timeout-ms: 5000
+  failure-rate-threshold: 50
+  slow-call-rate-threshold: 50
+  slow-call-duration-threshold: 75
+  permitted-num-of-calls-in-half-open-state: 5
+  sliding-window-size: 10
+  min-number-of-calls: 10
+  wait-duration-in-open-state: 10000
+  client-service-uri: lb://client-service
+  car-service-uri: lb://car-service
+  rent-service-uri: lb://rent-service
+  audit-service-uri: lb://audit-service
+  notification-service-uri: lb://notification-service
+  payment-service-uri: lb://payment-service
+
+#config for managing endpoints
+management:
+  endpoint:
+    gateway:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+#config for connection to eureka server
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka
