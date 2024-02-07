@@ -8,6 +8,17 @@ spring:
     name: api-gateway-server      #set app name
   cloud:
     gateway:
+      routes:
+        - id: client-service      #config for client-service routes
+          uri: lb://client-service
+          predicates:
+            - Path=/api/v1/clients/**
+            - Path=/api/v1/clients
+          filters:
+            name: CircuitBreaker
+            args:
+              name: clientServiceCircuitBreaker
+              fallbackUri: forward:/fallback/client-service-fallback
       default-filters:
         - AddRequestHeader=Is-Proxy-Request, true     #add for all request new header for identify that request was from api-gateway
         - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
@@ -27,22 +38,21 @@ spring:
             enabled: true         #enable locator for finding registered services
             lower-case-service-id: true
 
-#props for configuration circuit breaker and time limiter
-api-gateway-server:
-  timeout-ms: 5000
-  failure-rate-threshold: 50
-  slow-call-rate-threshold: 50
-  slow-call-duration-threshold: 75
-  permitted-num-of-calls-in-half-open-state: 5
-  sliding-window-size: 10
-  min-number-of-calls: 10
-  wait-duration-in-open-state: 10000
-  client-service-uri: lb://client-service
-  car-service-uri: lb://car-service
-  rent-service-uri: lb://rent-service
-  audit-service-uri: lb://audit-service
-  notification-service-uri: lb://notification-service
-  payment-service-uri: lb://payment-service
+#config for circuit breaker and time limiter
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        time-limiter:
+          timeout-duration: 5000
+        circuit-breaker:
+          failure-rate-threshold: 50
+          slow-call-rate-threshold: 50
+          slow-call-duration-threshold: 75
+          permitted-number-of-calls-in-half-open-state: 5
+          sliding-window-size: 10
+          minimum-number-of-calls: 10
+          wait-duration-in-open-state: 10000
 
 #config for managing endpoints
 management:

@@ -1,0 +1,63 @@
+server:
+  port: 0                        #set port
+
+spring:
+  application:
+    name: notification-service   #set app name
+
+  datasource:                                                    #set datasource props
+    url: jdbc:mysql://notification-db:3306/notificationdb
+    username: root
+    password: root
+  jpa:                                                           #config jpa props
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
+
+  mail:                                    #mail config
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    port: 587
+    host: smtp.gmail.com
+    properties:
+      mail:
+        transport:
+          protocol: smtp
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          ssl:
+            trust: smtp.gmail.com
+
+  kafka:                                  #set config for connection to broker and schema-registry
+    bootstrap-servers: kafka:29092
+    properties:
+      schema:
+        registry:
+          url: http://schema-registry:9091
+
+kafka:      #set kafka topics
+  topic:
+    client_notification_topic: client_notification_topic
+    rent_notification_topic: rent_notification_topic
+    payment_notification_topic: payment_notification_topic
+
+eureka:    #config for connection to eureka server
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka
+    register-with-eureka: true
+    fetch-registry: true
+
+management:           #set actuator config (enable all routes)
+  endpoints:
+    web:
+      exposure:
+        include: '*'
