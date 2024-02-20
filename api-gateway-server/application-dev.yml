@@ -12,13 +12,33 @@ spring:
         - id: client-service      #config for client-service routes
           uri: lb://client-service
           predicates:
-            - Path=/api/v1/clients/**
-            - Path=/api/v1/clients
+            - Path=/api/v1/client-service/**
+            - Path=/api/v1/client-service
           filters:
             name: CircuitBreaker
             args:
               name: clientServiceCircuitBreaker
               fallbackUri: forward:/fallback/client-service-fallback
+        - id: notification-service      #config for notification-service routes
+          uri: lb://notification-service
+          predicates:
+            - Path=/api/v1/notification-service/**
+            - Path=/api/v1/notification-service
+          filters:
+            name: CircuitBreaker
+            args:
+              name: notificationServiceCircuitBreaker
+              fallbackUri: forward:/fallback/notification-service-fallback
+        - id: audit-service      #config for audit-service routes
+          uri: lb://audit-service
+          predicates:
+            - Path=/api/v1/audit-service/**
+            - Path=/api/v1/audit-service
+          filters:
+            name: CircuitBreaker
+            args:
+              name: auditServiceCircuitBreaker
+              fallbackUri: forward:/fallback/audit-service-fallback
       default-filters:
         - AddRequestHeader=Is-Proxy-Request, true     #add for all request new header for identify that request was from api-gateway
         - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
