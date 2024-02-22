@@ -1,0 +1,56 @@
+server:
+  port: 0
+
+spring:
+  application:
+    name: audit-service
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    password: root
+    username: root
+    url: jdbc:postgresql://audit-db:5433/auditdb
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://keycloak:8080/auth/realms/carsharing
+          jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
+
+  kafka:
+    bootstrap-servers: kafka:29092
+    properties:
+      schema:
+        registry:
+          url: http://schema-registry:9091
+
+kafka:
+  topic:
+    client-service-audit-topic: client-service-audit-topic
+    car-service-audit-topic: car-service-audit-topic
+    rent-service-audit-topic: rent-service-audit-topic
+    payment-service-audit-topic: payment-service-audit-topic
+    notification-service-audit-topic: notification-service-audit-topic
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka
+    register-with-eureka: true
+    fetch-registry: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
