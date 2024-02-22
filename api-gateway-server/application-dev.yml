@@ -12,42 +12,73 @@ spring:
         - id: client-service      #config for client-service routes
           uri: lb://client-service
           predicates:
-            - Path=/api/v1/client-service/**
-            - Path=/api/v1/client-service
+            - Path=/client-service/**
           filters:
-            name: CircuitBreaker
-            args:
-              name: clientServiceCircuitBreaker
-              fallbackUri: forward:/fallback/client-service-fallback
+            - RewritePath=/client-service/?(?<segment>.*), /api/v1/client-service/$\{segment}
+            - name: CircuitBreaker
+              args:
+                name: clientServiceCircuitBreaker
+                fallbackUri: forward:/fallback/client-service-fallback
+        - id: car-service      #config for car-service routes
+          uri: lb://car-service
+          predicates:
+            - Path=/car-service/**
+          filters:
+            - RewritePath=/car-service/?(?<segment>.*), /api/v1/car-service/$\{segment}
+            - name: CircuitBreaker
+              args:
+                name: carServiceCircuitBreaker
+                fallbackUri: forward:/fallback/car-service-fallback
+        - id: rent-service      #config for rent-service routes
+          uri: lb://rent-service
+          predicates:
+            - Path=/rent-service/**
+          filters:
+            - RewritePath=/rent-service/?(?<segment>.*), /api/v1/rent-service/$\{segment}
+            - name: CircuitBreaker
+              args:
+                name: rentServiceCircuitBreaker
+                fallbackUri: forward:/fallback/rent-service-fallback
+        - id: payment-service      #config for payment-service routes
+          uri: lb://payment-service
+          predicates:
+            - Path=/payment-service/**
+          filters:
+            - RewritePath=/payment-service/?(?<segment>.*), /api/v1/payment-service/$\{segment}
+            - name: CircuitBreaker
+              args:
+                name: paymentServiceCircuitBreaker
+                fallbackUri: forward:/fallback/payment-service-fallback
         - id: notification-service      #config for notification-service routes
           uri: lb://notification-service
           predicates:
-            - Path=/api/v1/notification-service/**
+            - Path=/notification-service/**
           filters:
-            name: CircuitBreaker
-            args:
-              name: notificationServiceCircuitBreaker
-              fallbackUri: forward:/fallback/notification-service-fallback
+            - RewritePath=/notification-service/?(?<segment>.*), /api/v1/notification-service/$\{segment}
+            - name: CircuitBreaker
+              args:
+                name: notificationServiceCircuitBreaker
+                fallbackUri: forward:/fallback/notification-service-fallback
         - id: audit-service      #config for audit-service routes
           uri: lb://audit-service
           predicates:
-            - Path=/api/v1/audit-service/**
-            - Path=/api/v1/audit-service
+            - Path=/audit-service/**
           filters:
-            name: CircuitBreaker
-            args:
-              name: auditServiceCircuitBreaker
-              fallbackUri: forward:/fallback/audit-service-fallback
+            - RewritePath=/audit-service/?(?<segment>.*), /api/v1/audit-service/$\{segment}
+            - name: CircuitBreaker
+              args:
+                name: auditServiceCircuitBreaker
+                fallbackUri: forward:/fallback/audit-service-fallback
       default-filters:
         - AddRequestHeader=Is-Proxy-Request, true     #add for all request new header for identify that request was from api-gateway
         - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
       globalcors:
         cors-сonfigurations:
-          '[/**]':                #for all routes permitted all origins, headers and methods
+          '[/**]': #for all routes permitted all origins, headers and methods
             allowedOrigins: "*"
             allowedHeaders: "*"
             allowedMethods: "*"
-      metrics:                    #add metrics
+      metrics: #add metrics
         enabled: true
         actuator:
           verbose:
