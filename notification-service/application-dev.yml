@@ -50,10 +50,23 @@ spring:
           url: http://schema-registry:9091
 
 kafka:
-  topic:
-    client-service-notification-topic: client-service-notification-topic
-    rent-service-notification-topic: rent-service-notification-topic
-    payment-service-notification-topic: payment-service-notification-topic
+  topics:
+    client-service-topic:
+      name: client-service-notification-topic
+      consumer:
+        group-id: client-service-notification-topic-id
+    rent-service-topic:
+      name: rent-service-notification-topic
+      consumer:
+        group-id: rent-service-notification-topic-id
+    payment-service-topic:
+      name: payment-service-notification-topic
+      consumer:
+        group-id: payment-service-notification-topic-id
+    notification-service-topic:
+      name: notification-service-audit-topic
+      consumer:
+        group-id: notification-service-audit-topic-id
 
 eureka:
   instance:
@@ -63,6 +76,22 @@ eureka:
       defaultZone: http://eureka-server:8761/eureka
     register-with-eureka: true
     fetch-registry: true
+
+openapi:
+  oAuthFlow:
+    tokenUrl: http://keycloak:8080/realms/carsharing/protocol/openid-connect/token
+  service:
+    name: notification-service
+    version: 1.0.0
+    description: Notification service for working with notifications
+    url: http://localhost:8088
+
+springdoc:
+  show-actuator: true
+  api-docs:
+    path: /notification-service/v3/api-docs #these urls will used to load the swagger ui of this service by the api gateway
+  swagger-ui:
+    path: /notification-service/swagger-ui.html
 
 management:
   endpoints:

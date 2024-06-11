@@ -3,12 +3,15 @@ server:
 
 spring:
   application:
-    name: client-service
+    name: rent-service
+  profiles:
+    active: test
 
   datasource:
-    url: jdbc:mysql://localhost:3306/clientdb
+    url: jdbc:mysql://localhost:3308/rentdb
     username: root
     password: root
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -34,9 +37,9 @@ spring:
 kafka:
   topics:
     audit-topic:
-      name: client-service-audit-topic
+      name: rent-service-audit-topic
     notification-topic:
-      name: client-service-notification-topic
+      name: rent-service-notification-topic
 
 eureka:
   instance:
@@ -47,30 +50,28 @@ eureka:
     fetch-registry: true
     register-with-eureka: true
 
-keycloak:
-  serverUrl: http://localhost:8080
-  masterRealm: master
-  realm: carsharing
-  clientId: admin-cli
-  clientSecret: clientsecretforclientservice
-  username: admin
-  password: admin
-
-springdoc:
-  show-actuator: true
-  api-docs:
-    path: /client-service/v3/api-docs
-  swagger-ui:
-    path: /client-service/swagger-ui/index.html
-
 openapi:
   oAuthFlow:
     tokenUrl: http://localhost:8080/realms/carsharing/protocol/openid-connect/token
   service:
-    name: client-service
+    name: rent-service
     version: 1.0.0
-    description: Client service for working with clients
+    description: Rent service for working with rents
     url: http://localhost:8088
+
+springdoc:
+  show-actuator: true
+  api-docs:
+    path: /rent-service/v3/api-docs
+  swagger-ui:
+    path: /rent-service/swagger-ui/index.html
+
+feign:
+  client:
+    car-service:
+      name: car-service
+    client-service:
+      name: client-service
 
 management:
   endpoints:

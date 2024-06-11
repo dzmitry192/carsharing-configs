@@ -3,10 +3,12 @@ server:
 
 spring:
   application:
-    name: client-service
+    name: payment-service
+  profiles:
+    active: test
 
   datasource:
-    url: jdbc:mysql://localhost:3306/clientdb
+    url: jdbc:mysql://localhost:3306/paymentdb
     username: root
     password: root
   jpa:
@@ -34,9 +36,9 @@ spring:
 kafka:
   topics:
     audit-topic:
-      name: client-service-audit-topic
+      name: payment-service-audit-topic
     notification-topic:
-      name: client-service-notification-topic
+      name: payment-service-notification-topic
 
 eureka:
   instance:
@@ -47,30 +49,31 @@ eureka:
     fetch-registry: true
     register-with-eureka: true
 
-keycloak:
-  serverUrl: http://localhost:8080
-  masterRealm: master
-  realm: carsharing
-  clientId: admin-cli
-  clientSecret: clientsecretforclientservice
-  username: admin
-  password: admin
-
-springdoc:
-  show-actuator: true
-  api-docs:
-    path: /client-service/v3/api-docs
-  swagger-ui:
-    path: /client-service/swagger-ui/index.html
+stripe:
+  secretkey: sk_test_51PByRIFeeS6BFRDaPlNszYd3ZRlciywD9CHoGDFMsJAZ4d8tnWnDUbOYas50p6lYRmDQlUnPgW1LNRVOLQ635oxH0081dj6qkr
+  webhook:
+    secret: whsec_41892afaf0e493e918af2c1df7be3b7b032ebc6a8489943c0df04a8bbbbc8be0
 
 openapi:
   oAuthFlow:
     tokenUrl: http://localhost:8080/realms/carsharing/protocol/openid-connect/token
   service:
-    name: client-service
+    name: payment-service
     version: 1.0.0
-    description: Client service for working with clients
+    description: Payment service for working with payments
     url: http://localhost:8088
+
+springdoc:
+  show-actuator: true
+  api-docs:
+    path: /payment-service/v3/api-docs
+  swagger-ui:
+    path: /payment-service/swagger-ui/index.html
+
+feign:
+  client:
+    rent-service:
+      name: rent-service
 
 management:
   endpoints:

@@ -1,0 +1,75 @@
+server:
+  port: 0
+
+spring:
+  profiles:
+    active: test
+  application:
+    name: car-service
+
+  datasource:
+    url: jdbc:mysql://localhost:3307/cardb
+    password: root
+    username: root
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/carsharing
+          jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
+
+  kafka:
+    bootstrap-servers: kafka:29092
+    properties:
+      schema:
+        registry:
+          url: http://schema-registry:9091
+
+kafka:
+  topics:
+    audit-topic:
+      name: car-service-audit-topic
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka
+    fetch-registry: true
+    register-with-eureka: true
+
+openapi:
+  oAuthFlow:
+    tokenUrl: http://localhost:8080/realms/carsharing/protocol/openid-connect/token
+  service:
+    name: car-service
+    version: 1.0.0
+    description: Car service for working with cars
+    url: http://localhost:8088
+
+springdoc:
+  show-actuator: true
+  api-docs:
+    path: /car-service/v3/api-docs
+  swagger-ui:
+    path: /car-service/swagger-ui/index.html
+
+feign:
+  client:
+    rent-service:
+      name: rent-service
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'

@@ -34,12 +34,27 @@ spring:
           url: http://schema-registry:9091
 
 kafka:
-  topic:
-    client-service-audit-topic: client-service-audit-topic
-    car-service-audit-topic: car-service-audit-topic
-    rent-service-audit-topic: rent-service-audit-topic
-    payment-service-audit-topic: payment-service-audit-topic
-    notification-service-audit-topic: notification-service-audit-topic
+  topics:
+    client-service-topic:
+      name: client-service-audit-topic
+      consumer:
+        group-id: client-service-audit-topic-id
+    car-service-topic:
+      name: client-service-audit-topic
+      consumer:
+        group-id: client-service-audit-topic-id
+    rent-service-topic:
+      name: rent-service-audit-topic
+      consumer:
+        group-id: rent-service-audit-topic-id
+    payment-service-topic:
+      name: payment-service-audit-topic
+      consumer:
+        group-id: payment-service-audit-topic-id
+    notification-service-topic:
+      name: notification-service-audit-topic
+      consumer:
+        group-id: notification-service-audit-topic-id
 
 eureka:
   instance:
@@ -49,6 +64,22 @@ eureka:
       defaultZone: http://eureka-server:8761/eureka
     register-with-eureka: true
     fetch-registry: true
+
+openapi:
+  oAuthFlow:
+    tokenUrl: http://keycloak:8080/realms/carsharing/protocol/openid-connect/token
+  service:
+    name: audit-service
+    version: 1.0.0
+    description: Audit service for working with user's actions
+    url: http://localhost:8088
+
+springdoc:
+  show-actuator: true
+  api-docs:
+    path: /audit-service/v3/api-docs #these urls will used to load the swagger ui of this service by the api gateway
+  swagger-ui:
+    path: /audit-service/swagger-ui.html
 
 management:
   endpoints:
